@@ -1,0 +1,2 @@
+# -AtmoGraph-Supply-Chain-Ripple-Effect-Predictor
+AtmoGraph is a graph-based machine learning system designed to predict how disruptions propagate through complex supply chains. Traditional supply chain monitoring tools flag problems only after they've already caused damage — a delayed shipment, a stalled production line, an empty shelf. AtmoGraph instead treats the supply chain as a living netwok

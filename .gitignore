@@ -1,0 +1,18 @@
+# Node
+node_modules/
+frontend/node_modules/
+atmograph-frontend/node_modules/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Env
+.env
+
+# Neo4j generated data
+data/nodes.json
+data/edges.json
+atmograph-backend/data/nodes.json
+atmograph-backend/data/edges.json

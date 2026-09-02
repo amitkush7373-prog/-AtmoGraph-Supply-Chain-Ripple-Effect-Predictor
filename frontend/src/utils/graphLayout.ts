@@ -1,23 +1,58 @@
 import { Node, Edge, MarkerType } from 'reactflow';
 import { GraphNode, GraphEdge } from '../types/graph';
 
-// Layer positions for supply chain tiering
-const TIER_X_POSITIONS: Record<string, number> = {
-  Supplier: 100,
-  Manufacturer: 600,
-  Port: 1100,
-  Warehouse: 1600,
-  Distributor: 2100,
-  Product: 2600,
+// Configuration for supply chain tier grid positioning
+interface TierLayoutConfig {
+  baseX: number;
+  columns: number;
+  colSpacing: number;
+  rowSpacing: number;
+}
+
+const TIER_CONFIGS: Record<string, TierLayoutConfig> = {
+  Supplier: {
+    baseX: 50,
+    columns: 4,
+    colSpacing: 250,
+    rowSpacing: 100,
+  },
+  Manufacturer: {
+    baseX: 1150,
+    columns: 3,
+    colSpacing: 250,
+    rowSpacing: 105,
+  },
+  Port: {
+    baseX: 2000,
+    columns: 2,
+    colSpacing: 250,
+    rowSpacing: 110,
+  },
+  Warehouse: {
+    baseX: 2600,
+    columns: 3,
+    colSpacing: 250,
+    rowSpacing: 105,
+  },
+  Distributor: {
+    baseX: 3450,
+    columns: 3,
+    colSpacing: 250,
+    rowSpacing: 105,
+  },
+  Product: {
+    baseX: 4300,
+    columns: 2,
+    colSpacing: 250,
+    rowSpacing: 110,
+  },
 };
 
-const TIER_Y_SPACING: Record<string, number> = {
-  Supplier: 90,
-  Manufacturer: 110,
-  Port: 140,
-  Warehouse: 120,
-  Distributor: 120,
-  Product: 140,
+const DEFAULT_CONFIG: TierLayoutConfig = {
+  baseX: 1000,
+  columns: 3,
+  colSpacing: 250,
+  rowSpacing: 100,
 };
 
 export function transformToReactFlow(
@@ -25,7 +60,7 @@ export function transformToReactFlow(
   edges: GraphEdge[],
   selectedNodeId?: string | null
 ): { flowNodes: Node[]; flowEdges: Edge[] } {
-  // Group nodes by label/type for columnar positioning
+  // Counters for nodes in each tier to arrange in a clean 2D grid
   const tierCounters: Record<string, number> = {
     Supplier: 0,
     Manufacturer: 0,
@@ -37,15 +72,15 @@ export function transformToReactFlow(
 
   const flowNodes: Node[] = nodes.map((node) => {
     const tier = node.label || node.type || 'Supplier';
-    const baseX = TIER_X_POSITIONS[tier] ?? 1300;
-    const spacing = TIER_Y_SPACING[tier] ?? 100;
+    const config = TIER_CONFIGS[tier] || DEFAULT_CONFIG;
     const indexInTier = tierCounters[tier] || 0;
     tierCounters[tier] = (tierCounters[tier] || 0) + 1;
 
-    // Slight horizontal jitter for organic aesthetic
-    const jitterX = (indexInTier % 3) * 30;
-    const y = 80 + indexInTier * spacing;
-    const x = baseX + jitterX;
+    const col = indexInTier % config.columns;
+    const row = Math.floor(indexInTier / config.columns);
+
+    const x = config.baseX + col * config.colSpacing;
+    const y = 80 + row * config.rowSpacing;
 
     const isSelected = selectedNodeId === node.id;
 
@@ -76,7 +111,7 @@ export function transformToReactFlow(
         source: edge.source,
         target: edge.target,
         type: 'smoothstep',
-        animated: isConnectedToSelected || isHighRisk,
+        animated: Boolean(isConnectedToSelected || isHighRisk),
         label: edge.relationship || edge.type,
         labelStyle: {
           fill: '#94A3B8',

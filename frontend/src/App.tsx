@@ -30,7 +30,7 @@ export function App() {
     selectedNodeDetail,
     isLoadingDetail,
     selectNode,
-  } = useGraph({ limit: 1000 });
+  } = useGraph({ limit: 250 });
 
   const handleRefreshAll = () => {
     refreshHealth();

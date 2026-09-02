@@ -26,7 +26,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     selectedNodeDetail,
     isLoadingDetail,
     selectNode,
-  } = useGraph({ limit: 1000 });
+  } = useGraph({ limit: 250 });
 
   const { riskSummary, graphSummary, highRiskNodes, isLoading: isRiskLoading } = useRisk();
 

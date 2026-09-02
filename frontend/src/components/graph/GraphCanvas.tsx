@@ -7,6 +7,7 @@ import ReactFlow, {
   ReactFlowProvider,
   useNodesState,
   useEdgesState,
+  useReactFlow,
   NodeMouseHandler,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
@@ -63,12 +64,17 @@ const FlowInner: React.FC<GraphCanvasProps> = ({
 
   const [currentNodes, setNodes, onNodesChange] = useNodesState(flowNodes);
   const [currentEdges, setEdges, onEdgesChange] = useEdgesState(flowEdges);
+  const { fitView } = useReactFlow();
 
-  // Sync internal flow state when props change
+  // Sync internal flow state when props change and center the view
   React.useEffect(() => {
     setNodes(flowNodes);
     setEdges(flowEdges);
-  }, [flowNodes, flowEdges, setNodes, setEdges]);
+    const timer = setTimeout(() => {
+      fitView({ padding: 0.15, duration: 400 });
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [flowNodes, flowEdges, setNodes, setEdges, fitView]);
 
   const handleNodeClick: NodeMouseHandler = useCallback(
     (_, node) => {

@@ -3,7 +3,7 @@ import { api } from '../services/api';
 import { GraphEdge, GraphFilters, GraphNode, NodeDetail } from '../types/graph';
 
 export function useGraph(initialFilters?: GraphFilters) {
-  const [filters, setFilters] = useState<GraphFilters>(initialFilters || { limit: 250 });
+  const [filters, setFilters] = useState<GraphFilters>(initialFilters || { limit: 50 });
   const [nodes, setNodes] = useState<GraphNode[]>([]);
   const [edges, setEdges] = useState<GraphEdge[]>([]);
   const [totalNodes, setTotalNodes] = useState<number>(0);

@@ -99,11 +99,11 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           onChange={(e) => onFilterChange({ limit: Number(e.target.value) })}
           className="bg-dark-900 border border-slate-700 text-slate-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-brand-500 font-mono font-medium cursor-pointer"
         >
+          <option value={30}>30</option>
+          <option value={50}>50</option>
           <option value={100}>100</option>
           <option value={250}>250</option>
           <option value={500}>500</option>
-          <option value={1000}>1,000</option>
-          <option value={2000}>2,000</option>
         </select>
       </div>
 

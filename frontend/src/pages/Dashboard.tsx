@@ -26,9 +26,10 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     selectedNodeDetail,
     isLoadingDetail,
     selectNode,
-  } = useGraph({ limit: 250 });
+  } = useGraph({ limit: 50 });
 
   const { riskSummary, graphSummary, highRiskNodes, isLoading: isRiskLoading } = useRisk();
+  const [showHotspots, setShowHotspots] = React.useState<boolean>(true);
 
   const hasActiveFilters = Boolean(
     (filters.nodeType && filters.nodeType !== 'ALL') ||
@@ -74,14 +75,31 @@ export const Dashboard: React.FC<DashboardProps> = () => {
           />
         </div>
 
-        {/* Bottom Drawer / Hotspots Drawer Toggle */}
+        {/* Collapsible Hotspots Floating Panel */}
         {highRiskNodes.length > 0 && !selectedNodeDetail && (
-          <div className="absolute bottom-4 right-4 z-10 w-96 max-w-[calc(100vw-2rem)] shadow-2xl">
-            <HotspotsList
-              nodes={highRiskNodes.slice(0, 6)}
-              onSelectNode={selectNode}
-              isLoading={isRiskLoading}
-            />
+          <div className="absolute bottom-4 right-4 z-10 w-80 max-w-[calc(100vw-2rem)] shadow-2xl">
+            {showHotspots ? (
+              <div className="relative">
+                <button
+                  onClick={() => setShowHotspots(false)}
+                  className="absolute top-2.5 right-2.5 z-20 text-[10px] font-bold text-slate-400 hover:text-slate-100 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700"
+                >
+                  Hide
+                </button>
+                <HotspotsList
+                  nodes={highRiskNodes.slice(0, 4)}
+                  onSelectNode={selectNode}
+                  isLoading={isRiskLoading}
+                />
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowHotspots(true)}
+                className="px-3 py-1.5 rounded-lg bg-dark-800 border border-slate-700 text-xs font-semibold text-slate-200 hover:bg-dark-700 shadow-xl flex items-center space-x-2"
+              >
+                <span>⚠️ Show Hotspots ({highRiskNodes.length})</span>
+              </button>
+            )}
           </div>
         )}
       </div>

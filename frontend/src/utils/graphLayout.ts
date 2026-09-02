@@ -1,67 +1,25 @@
 import { Node, Edge, MarkerType } from 'reactflow';
 import { GraphNode, GraphEdge } from '../types/graph';
 
-// Configuration for supply chain tier grid positioning
-interface TierLayoutConfig {
-  baseX: number;
-  columns: number;
-  colSpacing: number;
-  rowSpacing: number;
-}
-
-const TIER_CONFIGS: Record<string, TierLayoutConfig> = {
-  Supplier: {
-    baseX: 50,
-    columns: 4,
-    colSpacing: 250,
-    rowSpacing: 100,
-  },
-  Manufacturer: {
-    baseX: 1150,
-    columns: 3,
-    colSpacing: 250,
-    rowSpacing: 105,
-  },
-  Port: {
-    baseX: 2000,
-    columns: 2,
-    colSpacing: 250,
-    rowSpacing: 110,
-  },
-  Warehouse: {
-    baseX: 2600,
-    columns: 3,
-    colSpacing: 250,
-    rowSpacing: 105,
-  },
-  Distributor: {
-    baseX: 3450,
-    columns: 3,
-    colSpacing: 250,
-    rowSpacing: 105,
-  },
-  Product: {
-    baseX: 4300,
-    columns: 2,
-    colSpacing: 250,
-    rowSpacing: 110,
-  },
+// Dedicated horizontal lanes for the 6 supply-chain tiers
+const TIER_LANE_X: Record<string, number> = {
+  Supplier: 80,
+  Manufacturer: 520,
+  Port: 960,
+  Warehouse: 1400,
+  Distributor: 1840,
+  Product: 2280,
 };
 
-const DEFAULT_CONFIG: TierLayoutConfig = {
-  baseX: 1000,
-  columns: 3,
-  colSpacing: 250,
-  rowSpacing: 100,
-};
+const DEFAULT_LANE_X = 1200;
 
 export function transformToReactFlow(
   nodes: GraphNode[],
   edges: GraphEdge[],
   selectedNodeId?: string | null
 ): { flowNodes: Node[]; flowEdges: Edge[] } {
-  // Counters for nodes in each tier to arrange in a clean 2D grid
-  const tierCounters: Record<string, number> = {
+  // Group nodes by tier
+  const tierCounts: Record<string, number> = {
     Supplier: 0,
     Manufacturer: 0,
     Port: 0,
@@ -72,15 +30,16 @@ export function transformToReactFlow(
 
   const flowNodes: Node[] = nodes.map((node) => {
     const tier = node.label || node.type || 'Supplier';
-    const config = TIER_CONFIGS[tier] || DEFAULT_CONFIG;
-    const indexInTier = tierCounters[tier] || 0;
-    tierCounters[tier] = (tierCounters[tier] || 0) + 1;
+    const baseX = TIER_LANE_X[tier] ?? DEFAULT_LANE_X;
+    const indexInTier = tierCounts[tier] || 0;
+    tierCounts[tier] = (tierCounts[tier] || 0) + 1;
 
-    const col = indexInTier % config.columns;
-    const row = Math.floor(indexInTier / config.columns);
+    // Sub-column layout if tier has many nodes to prevent excessive vertical height
+    const subCol = indexInTier > 7 ? (indexInTier % 2) * 190 : 0;
+    const row = indexInTier > 7 ? Math.floor(indexInTier / 2) : indexInTier;
 
-    const x = config.baseX + col * config.colSpacing;
-    const y = 80 + row * config.rowSpacing;
+    const x = baseX + subCol;
+    const y = 80 + row * 135;
 
     const isSelected = selectedNodeId === node.id;
 
@@ -114,16 +73,16 @@ export function transformToReactFlow(
         animated: Boolean(isConnectedToSelected || isHighRisk),
         label: edge.relationship || edge.type,
         labelStyle: {
-          fill: '#94A3B8',
+          fill: '#CBD5E1',
           fontSize: 10,
-          fontWeight: 500,
+          fontWeight: 600,
           fontFamily: 'Inter, sans-serif',
         },
         labelBgStyle: {
-          fill: '#0B0F19',
-          fillOpacity: 0.85,
+          fill: '#0F172A',
+          fillOpacity: 0.92,
         },
-        labelBgPadding: [4, 2] as [number, number],
+        labelBgPadding: [6, 3] as [number, number],
         labelBgBorderRadius: 4,
         style: {
           stroke: isConnectedToSelected
@@ -131,8 +90,8 @@ export function transformToReactFlow(
             : isHighRisk
             ? '#F97316'
             : '#334155',
-          strokeWidth: isConnectedToSelected ? 2.5 : isHighRisk ? 2 : 1.2,
-          opacity: selectedNodeId ? (isConnectedToSelected ? 1 : 0.25) : 0.75,
+          strokeWidth: isConnectedToSelected ? 2.5 : isHighRisk ? 2 : 1.4,
+          opacity: selectedNodeId ? (isConnectedToSelected ? 1 : 0.2) : 0.75,
         },
         markerEnd: {
           type: MarkerType.ArrowClosed,
@@ -141,8 +100,8 @@ export function transformToReactFlow(
             : isHighRisk
             ? '#F97316'
             : '#475569',
-          width: 14,
-          height: 14,
+          width: 16,
+          height: 16,
         },
       };
     });

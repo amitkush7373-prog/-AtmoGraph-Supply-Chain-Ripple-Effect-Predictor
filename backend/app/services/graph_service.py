@@ -173,7 +173,41 @@ class GraphService:
             filtered_nodes = [n for n in filtered_nodes if s in n.get("name", "").lower() or s in n.get("city", "").lower() or s in n.get("id", "").lower()]
 
         total_nodes = len(filtered_nodes)
-        paged_nodes = filtered_nodes[offset : offset + limit]
+
+        # When viewing all types, ensure balanced representation across all 6 tiers
+        if not node_type or node_type.upper() == "ALL":
+            tier_buckets: Dict[str, List[Dict[str, Any]]] = {
+                "Supplier": [],
+                "Manufacturer": [],
+                "Port": [],
+                "Warehouse": [],
+                "Distributor": [],
+                "Product": [],
+            }
+            for n in filtered_nodes:
+                t = n.get("type") or n.get("label") or "Supplier"
+                if t in tier_buckets:
+                    tier_buckets[t].append(n)
+                else:
+                    tier_buckets["Supplier"].append(n)
+
+            # Proportional distribution across tiers
+            allocations = {
+                "Supplier": max(2, int(limit * 0.28)),
+                "Manufacturer": max(2, int(limit * 0.22)),
+                "Port": max(2, int(limit * 0.14)),
+                "Warehouse": max(2, int(limit * 0.14)),
+                "Distributor": max(2, int(limit * 0.12)),
+                "Product": max(2, int(limit * 0.10)),
+            }
+
+            paged_nodes: List[Dict[str, Any]] = []
+            for t, count in allocations.items():
+                paged_nodes.extend(tier_buckets[t][:count])
+
+            paged_nodes = paged_nodes[:limit]
+        else:
+            paged_nodes = filtered_nodes[offset : offset + limit]
 
         graph_nodes = []
         for n in paged_nodes:

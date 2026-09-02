@@ -8,17 +8,18 @@ import {
   Package,
   Layers,
   MapPin,
+  Activity,
 } from 'lucide-react';
 import { GraphNode } from '../../types/graph';
 import { formatRiskColor, formatNodeTypeColor } from '../../utils/formatters';
 
 const TYPE_ICONS: Record<string, React.ReactNode> = {
-  Supplier: <Layers className="w-3.5 h-3.5" />,
-  Manufacturer: <Factory className="w-3.5 h-3.5" />,
-  Port: <Anchor className="w-3.5 h-3.5" />,
-  Warehouse: <Warehouse className="w-3.5 h-3.5" />,
-  Distributor: <Truck className="w-3.5 h-3.5" />,
-  Product: <Package className="w-3.5 h-3.5" />,
+  Supplier: <Layers className="w-4 h-4 text-emerald-400" />,
+  Manufacturer: <Factory className="w-4 h-4 text-blue-400" />,
+  Port: <Anchor className="w-4 h-4 text-cyan-400" />,
+  Warehouse: <Warehouse className="w-4 h-4 text-amber-400" />,
+  Distributor: <Truck className="w-4 h-4 text-purple-400" />,
+  Product: <Package className="w-4 h-4 text-rose-400" />,
 };
 
 const CustomNodeComponent: React.FC<NodeProps<GraphNode & { isSelected?: boolean }>> = ({ data, selected }) => {
@@ -34,38 +35,43 @@ const CustomNodeComponent: React.FC<NodeProps<GraphNode & { isSelected?: boolean
 
   return (
     <div
-      className={`relative w-56 rounded-lg bg-dark-800/95 backdrop-blur-sm border transition-all duration-150 p-3 shadow-lg ${
+      className={`relative w-64 rounded-xl bg-slate-900/95 backdrop-blur-md border transition-all duration-200 p-3.5 shadow-2xl hover:scale-[1.02] cursor-pointer ${
         isSelected
-          ? 'border-brand-400 ring-2 ring-brand-500/40 shadow-brand-500/20 shadow-xl'
+          ? 'border-sky-400 ring-2 ring-sky-500/50 shadow-sky-500/30 shadow-2xl scale-[1.03]'
           : nodeBorder
       } ${nodeGlow}`}
     >
-      {/* React Flow Connection Handles */}
+      {/* React Flow Left and Right Connection Points */}
       <Handle
         type="target"
         position={Position.Left}
-        className="!w-2 !h-2 !bg-slate-500 !border-dark-800 hover:!bg-brand-400"
+        className="!w-2.5 !h-2.5 !bg-sky-400 !border-2 !border-slate-900 hover:!scale-125 transition-transform"
       />
       <Handle
         type="source"
         position={Position.Right}
-        className="!w-2 !h-2 !bg-slate-500 !border-dark-800 hover:!bg-brand-400"
+        className="!w-2.5 !h-2.5 !bg-sky-400 !border-2 !border-slate-900 hover:!scale-125 transition-transform"
       />
 
-      {/* Top Header: Node Type & Risk Badge */}
-      <div className="flex items-center justify-between gap-1 mb-2">
-        <div className="flex items-center space-x-1.5 min-w-0">
-          <div className={`p-1 rounded flex-shrink-0 ${iconBg}`}>
-            {TYPE_ICONS[nodeType] || <Layers className="w-3.5 h-3.5" />}
+      {/* Header: Node Type Icon + Tier Title + Risk Badge */}
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <div className="flex items-center space-x-2 min-w-0">
+          <div className={`p-1.5 rounded-lg flex-shrink-0 ${iconBg}`}>
+            {TYPE_ICONS[nodeType] || <Layers className="w-4 h-4 text-slate-300" />}
           </div>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 truncate">
-            {nodeType}
-          </span>
+          <div>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block leading-tight">
+              {nodeType}
+            </span>
+            <span className="text-[9px] font-mono text-slate-500 block leading-tight">
+              {data.id}
+            </span>
+          </div>
         </div>
 
-        {/* Risk Badge */}
+        {/* Risk Badge Pill */}
         <span
-          className={`inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-bold border ${badgeBg} ${badgeText} ${badgeBorder}`}
+          className={`inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeBg} ${badgeText} ${badgeBorder} flex-shrink-0 shadow-sm`}
         >
           <span
             className={`w-1.5 h-1.5 rounded-full ${dotColor} ${
@@ -76,22 +82,26 @@ const CustomNodeComponent: React.FC<NodeProps<GraphNode & { isSelected?: boolean
         </span>
       </div>
 
-      {/* Node Name */}
+      {/* Main Node Name */}
       <h4
-        className="text-xs font-semibold text-slate-100 truncate mb-1"
+        className="text-xs font-bold text-slate-100 line-clamp-1 mb-2 tracking-tight group-hover:text-sky-300 transition-colors"
         title={data.name}
       >
         {data.name}
       </h4>
 
-      {/* Bottom Metadata: City / Country & Risk Score */}
-      <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1.5 border-t border-slate-800">
-        <div className="flex items-center space-x-1 truncate max-w-[120px]">
+      {/* Bottom Metadata: Location & Operational Status & Risk Score */}
+      <div className="flex items-center justify-between text-[10px] text-slate-400 pt-2 border-t border-slate-800/80">
+        <div className="flex items-center space-x-1 truncate max-w-[130px]">
           <MapPin className="w-3 h-3 text-slate-500 flex-shrink-0" />
-          <span className="truncate">{data.city || data.country || 'Global'}</span>
+          <span className="truncate font-medium text-slate-300">
+            {data.city ? `${data.city}, ` : ''}{data.country || 'Global'}
+          </span>
         </div>
-        <div className="font-mono text-slate-400">
-          Score: <span className="text-slate-200 font-semibold">{riskScore.toFixed(2)}</span>
+
+        <div className="flex items-center space-x-1 font-mono text-[10px] bg-slate-800/80 px-1.5 py-0.5 rounded text-slate-300">
+          <Activity className="w-2.5 h-2.5 text-sky-400" />
+          <span>{(riskScore * 100).toFixed(0)}%</span>
         </div>
       </div>
     </div>

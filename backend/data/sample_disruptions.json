@@ -1,0 +1,82 @@
+[
+  {
+    "id": "NEWS_001",
+    "title": "Rotterdam Port Strike Shuts Down Container Terminals",
+    "text": "Due to a major port strike in Rotterdam, shipments from European electronics suppliers are experiencing severe delays and container vessel backlogs across the Netherlands.",
+    "expected_locations": ["Rotterdam", "Netherlands"],
+    "expected_severity": "HIGH",
+    "category": "Labor Strike"
+  },
+  {
+    "id": "NEWS_002",
+    "title": "Severe Typhoon Forces Shanghai and Ningbo Port Closures",
+    "text": "A catastrophic typhoon has forced the complete closure and shutdown of container terminals in Shanghai and Ningbo-Zhoushan, halting semiconductor and automotive exports across China.",
+    "expected_locations": ["Shanghai", "China", "Ningbo-Zhoushan"],
+    "expected_severity": "CRITICAL",
+    "category": "Natural Disaster"
+  },
+  {
+    "id": "NEWS_003",
+    "title": "Earthquake Strikes Taiwan Semiconductor Hub in Hsinchu",
+    "text": "A powerful 6.8 magnitude earthquake near Hsinchu and Taipei has caused emergency shut downs at major semiconductor fabrication plants and cleanrooms in Taiwan.",
+    "expected_locations": ["Hsinchu", "Taipei", "Taiwan"],
+    "expected_severity": "CRITICAL",
+    "category": "Natural Disaster"
+  },
+  {
+    "id": "NEWS_004",
+    "title": "Customs Backlog and Delays Reported in Hamburg",
+    "text": "Logistics operators in Hamburg, Germany report mounting customs delays, minor rail congestion, and cargo slowdowns affecting industrial machinery components.",
+    "expected_locations": ["Hamburg", "Germany"],
+    "expected_severity": "MEDIUM",
+    "category": "Logistics Congestion"
+  },
+  {
+    "id": "NEWS_005",
+    "title": "Long Beach and Los Angeles Terminal Worker Walkout",
+    "text": "Dockworkers at the Port of Long Beach and Los Angeles have initiated an unannounced labor protest and strike, resulting in anchored container ships and freight disruption in the USA.",
+    "expected_locations": ["Long Beach", "Los Angeles", "USA"],
+    "expected_severity": "HIGH",
+    "category": "Labor Strike"
+  },
+  {
+    "id": "NEWS_006",
+    "title": "Chemical Plant Fire and Explosion in Houston",
+    "text": "A major fire and chemical plant explosion in Houston, USA has destroyed polymer production units, triggering critical shortages for automotive battery materials.",
+    "expected_locations": ["Houston", "USA"],
+    "expected_severity": "CRITICAL",
+    "category": "Industrial Accident"
+  },
+  {
+    "id": "NEWS_007",
+    "title": "Singapore Transshipment Hub Under Monitoring for Red Sea Rerouting",
+    "text": "Port authorities in Singapore are actively monitoring container dwell times amid global shipping route diversions, noting potential concern for slight yard congestion.",
+    "expected_locations": ["Singapore"],
+    "expected_severity": "LOW",
+    "category": "Supply Chain Monitoring"
+  },
+  {
+    "id": "NEWS_008",
+    "title": "Electronics Assembly Lockdown and Quarantines in Shenzhen",
+    "text": "Municipal restrictions in Shenzhen, China have halted operations across multiple consumer electronics assembly plants and component fabrication facilities.",
+    "expected_locations": ["Shenzhen", "China"],
+    "expected_severity": "HIGH",
+    "category": "Operational Halt"
+  },
+  {
+    "id": "NEWS_009",
+    "title": "Monsoon Flooding Disrupts Automotive Supply Corridor in Mumbai and Chennai",
+    "text": "Severe monsoon flooding in Mumbai and Chennai has flooded key highway freight corridors, delaying raw materials delivery to automotive manufacturers across India.",
+    "expected_locations": ["Mumbai", "Chennai", "India"],
+    "expected_severity": "HIGH",
+    "category": "Severe Weather"
+  },
+  {
+    "id": "NEWS_010",
+    "title": "Cyberattack Targets European Logistics Hub in Antwerp",
+    "text": "A ransomware cyberattack against port terminal management systems in Antwerp, Belgium has caused severe operational disruption and electronic gate closures.",
+    "expected_locations": ["Antwerp", "Belgium"],
+    "expected_severity": "HIGH",
+    "category": "Cyber Incident"
+  }
+]

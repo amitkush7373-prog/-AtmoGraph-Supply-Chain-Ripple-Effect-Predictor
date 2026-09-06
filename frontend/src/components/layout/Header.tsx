@@ -55,8 +55,8 @@ export const Header: React.FC<HeaderProps> = ({
           <span className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900 border border-slate-800">
             <Database className="w-3 h-3 text-cyan-400" />
             <span className="text-slate-500">Neo4j:</span>
-            <span className={isNeo4jOnline ? 'text-emerald-400' : 'text-amber-400'}>
-              {isNeo4jOnline ? 'Live DB' : 'Graph Dataset'}
+            <span className={isNeo4jOnline ? 'text-emerald-400' : 'text-cyan-400'}>
+              {isNeo4jOnline ? 'Live DB' : 'Dataset (Active)'}
             </span>
           </span>
         </div>

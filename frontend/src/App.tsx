@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Header } from './components/layout/Header';
 import { StatCardsRow } from './components/dashboard/StatCardsRow';
-import { LiveNewsFeed, DisruptionNewsItem } from './components/news/LiveNewsFeed';
+import { LiveNewsFeed, DisruptionNewsItem, LIVE_NEWS_PRESETS } from './components/news/LiveNewsFeed';
 import { GlobalSupplyGraph } from './components/graph/GlobalSupplyGraph';
 import { ImpactAnalysisPanel } from './components/analysis/ImpactAnalysisPanel';
 import { useHealth } from './hooks/useHealth';
@@ -59,7 +59,7 @@ export function App() {
   const { health, isApiOnline, isNeo4jOnline, refreshHealth } = useHealth();
   const { refreshRisk } = useRisk();
 
-  const [activeNews, setActiveNews] = useState<DisruptionNewsItem | null>(null);
+  const [activeNews, setActiveNews] = useState<DisruptionNewsItem | null>(LIVE_NEWS_PRESETS[0]);
   const [extractedEntities, setExtractedEntities] = useState<ExtractedEntity[]>([]);
   const [isSimulating, setIsSimulating] = useState<boolean>(false);
 
@@ -69,20 +69,28 @@ export function App() {
   const [gnnPredictions, setGnnPredictions] = useState<GNNNodePrediction[]>([]);
   const [gnnMetrics, setGnnMetrics] = useState<GNNModelMetrics | null>(null);
 
-  // Simulation Metrics
+  // Simulation Metrics initialized with baseline critical scenario
   const [metrics, setMetrics] = useState({
-    nodesAffected: null as number | null,
-    maxRippleHops: null as number | null,
-    estDelayDays: null as number | null,
-    estCostImpact: null as string | null,
-    confidencePercent: null as number | null,
+    nodesAffected: LIVE_NEWS_PRESETS[0].rippleNodesCount as number | null,
+    maxRippleHops: LIVE_NEWS_PRESETS[0].hops as number | null,
+    estDelayDays: LIVE_NEWS_PRESETS[0].estDelay as number | null,
+    estCostImpact: LIVE_NEWS_PRESETS[0].estCost as string | null,
+    confidencePercent: 94 as number | null,
   });
 
-  const [disruptedNodeId, setDisruptedNodeId] = useState<string | null>(null);
-  const [rippleNodeIds, setRippleNodeIds] = useState<string[]>([]);
-  const [affectedNames, setAffectedNames] = useState<string[]>([]);
+  const [disruptedNodeId, setDisruptedNodeId] = useState<string | null>(LIVE_NEWS_PRESETS[0].targetNodeId || 'PRT_0001');
+  const [rippleNodeIds, setRippleNodeIds] = useState<string[]>(
+    DOWNSTREAM_RIPPLE_MAP['PRT_0001'] || ['WH_EU', 'CONS_EU']
+  );
+  const [affectedNames, setAffectedNames] = useState<string[]>(
+    DOWNSTREAM_NAME_MAP['PRT_0001'] || [
+      'EU Distribution Center',
+      'Global Retail Network',
+      'European Consumers',
+    ]
+  );
 
-  // Fetch GNN model metrics on initial load
+  // Fetch GNN model metrics on initial load and run baseline simulation
   useEffect(() => {
     api.getGNNMetrics()
       .then((m) => setGnnMetrics(m))
@@ -101,6 +109,8 @@ export function App() {
           status: 'ready',
         });
       });
+
+    handleSimulateNews(LIVE_NEWS_PRESETS[0]);
   }, []);
 
   const handleSimulateNews = async (news: DisruptionNewsItem) => {
@@ -210,7 +220,7 @@ export function App() {
   const handleRefreshAll = () => {
     refreshHealth();
     refreshRisk();
-    handleResetSimulation();
+    handleSimulateNews(activeNews || LIVE_NEWS_PRESETS[0]);
   };
 
   return (

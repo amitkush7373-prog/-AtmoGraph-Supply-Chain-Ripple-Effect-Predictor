@@ -23,13 +23,10 @@ def health_check():
             "environment": settings.ENVIRONMENT,
         }
     else:
-        return JSONResponse(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            content={
-                "status": "degraded",
-                "neo4j": "disconnected",
-                "message": f"Unable to reach Neo4j database at {settings.NEO4J_URI}. Please ensure the Neo4j container or service is started.",
-                "version": settings.VERSION,
-                "environment": settings.ENVIRONMENT,
-            }
-        )
+        return {
+            "status": "degraded",
+            "neo4j": "disconnected",
+            "message": f"Neo4j database offline at {settings.NEO4J_URI}. Operating in graph dataset mode.",
+            "version": settings.VERSION,
+            "environment": settings.ENVIRONMENT,
+        }

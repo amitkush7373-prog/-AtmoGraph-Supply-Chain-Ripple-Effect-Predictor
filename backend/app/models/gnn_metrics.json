@@ -1,0 +1,13 @@
+{
+  "model_name": "SupplyChainGNN-GraphSAGE",
+  "architecture": "3-Layer Lead-Time Modulated GraphSAGE with Residual Skip",
+  "layers": 3,
+  "hidden_dim": 64,
+  "mae_days": 0.1,
+  "rmse_days": 0.41,
+  "r2_score": 0.876,
+  "at_risk_accuracy": 98.3,
+  "total_training_scenarios": 80,
+  "trained_at": "2026-09-06T13:36:57.770557+00:00",
+  "status": "ready"
+}

@@ -8,7 +8,7 @@ import {
   HelpCircle,
 } from 'lucide-react';
 
-export type NavTab = 'dashboard' | 'graph' | 'analysis';
+export type NavTab = 'dashboard' | 'graph' | 'analysis' | 'predictive';
 
 interface SidebarProps {
   activeTab: NavTab;
@@ -72,19 +72,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </span>
         </button>
 
-        {/* Week 3 Future Feature Placeholder (Properly Labeled) */}
-        <div
-          className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium text-slate-500 opacity-60 cursor-not-allowed bg-dark-900/40 border border-transparent mt-3"
-          title="Graph Neural Network (GNN) Ripple Prediction engine is scheduled for Week 3"
+        {/* Week 3 Feature: Active Predictive Ripple GNN */}
+        <button
+          onClick={() => onTabChange('predictive')}
+          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all mt-1 cursor-pointer ${
+            activeTab === 'predictive'
+              ? 'bg-purple-500/10 text-purple-400 border border-purple-500/30'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-dark-700/60'
+          }`}
+          title="Graph Neural Network (GNN) Delay Regression & Predictive Ripple Intelligence"
         >
           <div className="flex items-center space-x-2.5">
-            <Cpu className="w-4 h-4" />
+            <Cpu className="w-4 h-4 text-purple-400" />
             <span>Predictive Ripple (GNN)</span>
           </div>
-          <span className="text-[9px] px-1 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">
-            Week 3
+          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/30 font-mono">
+            Active
           </span>
-        </div>
+        </button>
       </div>
 
       {/* Threat Summary Box */}

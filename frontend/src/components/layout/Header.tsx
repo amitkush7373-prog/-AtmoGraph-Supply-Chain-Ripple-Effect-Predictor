@@ -36,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="hidden md:flex items-center space-x-3 text-slate-400 text-[11px] font-mono">
           <span className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300">
             <Brain className="w-3 h-3 text-purple-400" />
-            <span className="text-slate-500">GNN Model:</span> PyG-GraphSAGE
+            <span className="text-slate-500">GNN Model:</span> GraphSAGE (R²: 0.88)
           </span>
 
           <span className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300">

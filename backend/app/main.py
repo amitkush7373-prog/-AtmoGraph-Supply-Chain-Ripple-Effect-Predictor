@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api.routes import health, graph, entities, risk, news
+from app.api.routes import health, graph, entities, risk, news, gnn
 from app.core.config import settings
 from app.core.database import db, Neo4jConnectionError
 
@@ -42,12 +42,13 @@ app = FastAPI(
     
     AtmoGraph is a graph-native supply-chain risk analysis platform.
     
-    ### Capabilities (Week 1 & Week 2 Scope):
+    ### Capabilities:
     * **Graph Foundations**: Neo4j-backed global supply chain graph (Suppliers, Manufacturers, Ports, Warehouses, Distributors, Products).
     * **NLP Disruption Pipeline**: spaCy Named Entity Recognition (NER), entity normalization, and disruption severity classification.
     * **Dynamic Risk Updates**: Matches disruption entities to Neo4j nodes and updates risk levels (LOW -> MEDIUM -> HIGH -> CRITICAL).
     * **Ripple Effect Engine**: Downstream risk propagation along supply-chain routes.
-    * **REST APIs**: Full CRUD, summary, search, and graph querying for React frontends.
+    * **GNN Engineering (Week 3)**: PyTorch 3-Layer GraphSAGE node regression predicting downstream delays (days) and risk probabilities.
+    * **REST APIs**: Full CRUD, summary, search, graph querying, and GNN prediction for React frontends.
     """,
     lifespan=lifespan,
     docs_url="/docs",
@@ -84,6 +85,7 @@ app.include_router(graph.router, prefix=settings.API_V1_PREFIX)
 app.include_router(entities.router, prefix=settings.API_V1_PREFIX)
 app.include_router(risk.router, prefix=settings.API_V1_PREFIX)
 app.include_router(news.router, prefix=settings.API_V1_PREFIX)
+app.include_router(gnn.router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/", tags=["Root"])

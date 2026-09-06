@@ -103,4 +103,25 @@ export const api = {
     const response = await apiClient.get<{ total: number; events: DisruptionEventDetail[] }>(`/news/events?limit=${limit}`);
     return response.data;
   },
+
+  // GNN Predictive Endpoints
+  async predictGNN(payload: import('../types/gnn').GNNPredictRequest): Promise<import('../types/gnn').GNNPredictResponse> {
+    const response = await apiClient.post<import('../types/gnn').GNNPredictResponse>('/gnn/predict', payload);
+    return response.data;
+  },
+
+  async getGNNMetrics(): Promise<import('../types/gnn').GNNModelMetrics> {
+    const response = await apiClient.get<import('../types/gnn').GNNModelMetrics>('/gnn/metrics');
+    return response.data;
+  },
+
+  async getGNNPresets(): Promise<import('../types/gnn').GNNPresetScenario[]> {
+    const response = await apiClient.get<import('../types/gnn').GNNPresetScenario[]>('/gnn/presets');
+    return response.data;
+  },
+
+  async predictGNNPreset(presetId: string): Promise<import('../types/gnn').GNNPredictResponse> {
+    const response = await apiClient.get<import('../types/gnn').GNNPredictResponse>(`/gnn/preset/${encodeURIComponent(presetId)}`);
+    return response.data;
+  },
 };

@@ -25,6 +25,8 @@ from app.models.risk_models import RiskLevel, NodeStatus
 from app.services.ner_service import ner_service, ENTITY_ALIASES
 from app.services.risk_service import risk_service, _score_to_risk_level, _risk_level_to_status
 from app.services.graph_service import graph_service
+from app.services.gnn_service import gnn_service
+from app.models.gnn_models import GNNPredictRequest
 from app.utils.seed_data import generate_supply_chain_graph, save_graph_to_disk
 
 
@@ -178,6 +180,30 @@ def run_pipeline_on_text(news_item: dict, is_neo4j_online: bool, local_nodes: li
 
         event_id = f"DISRUPT_{uuid.uuid4().hex[:8].upper()}"
         print(f"\n[EVENT LOGGED] Disruption Event ID: {event_id}")
+
+    # Step 6 (Week 3): PyTorch Graph Neural Network (GNN) Delay Node Regression
+    print("\n[Step 6] Running PyTorch 3-Layer GraphSAGE GNN Node Delay Regression...")
+    try:
+        if is_neo4j_online:
+            epi_ids = [m.id for m in matched_nodes[:3]]
+        else:
+            epi_ids = [m["id"] for m in matched_nodes[:3]]
+
+        gnn_req = GNNPredictRequest(
+            epicenter_node_ids=epi_ids,
+            severity=detected_severity,
+            text=text,
+        )
+        gnn_res = gnn_service.predict(gnn_req)
+        print(f"  -> GNN Inference Completed in {gnn_res.inference_time_ms:.1f}ms (Model Confidence: {gnn_res.confidence}%)")
+        print(f"  -> Total Downstream Facilities At Risk: {gnn_res.total_at_risk_nodes}")
+        print(f"  -> Maximum Predicted Downstream Delay:   +{gnn_res.max_delay_days} days (Network Avg: +{gnn_res.avg_delay_days}d)")
+        print("  -> Top Predicted At-Risk Supply Chain Facilities:")
+        for p in gnn_res.node_predictions[:5]:
+            if p.is_at_risk:
+                print(f"     * [{p.risk_level}] {p.name} ({p.id}): +{p.predicted_delay_days} days delay | Risk: {p.predicted_risk_score:.2f} ({p.hops_from_disruption} hops)")
+    except Exception as ge:
+        print(f"  -> GNN inference notice: {ge}")
 
 
 def main():
